@@ -1,0 +1,2 @@
+1|Homer Simpson|10 Jan 1993|Liver Failure;Hypertension|BP: 120/80;;liver failure recovery
+2|Bart Simpson|11 Feb 1991|UTI;High Blood Pressure|BP: 180/90;;Tozam once a day
