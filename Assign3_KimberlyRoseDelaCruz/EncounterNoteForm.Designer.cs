@@ -31,8 +31,6 @@
             this.lblSuccessMsg = new System.Windows.Forms.Label();
             this.lblErrorMsg = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.richTextProblems = new System.Windows.Forms.RichTextBox();
-            this.richTextBoxBPMeasurement = new System.Windows.Forms.RichTextBox();
             this.richTextBoxNotes = new System.Windows.Forms.RichTextBox();
             this.btnDeleteNote = new System.Windows.Forms.Button();
             this.btnUpdateNote = new System.Windows.Forms.Button();
@@ -51,6 +49,8 @@
             this.lblNoteID = new System.Windows.Forms.Label();
             this.listOfPatients = new System.Windows.Forms.ListBox();
             this.btnStartNewNote = new System.Windows.Forms.Button();
+            this.listBoxNewProblems = new System.Windows.Forms.ListBox();
+            this.listBoxBPMeasurements = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,8 +78,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.richTextProblems);
-            this.groupBox1.Controls.Add(this.richTextBoxBPMeasurement);
+            this.groupBox1.Controls.Add(this.listBoxBPMeasurements);
+            this.groupBox1.Controls.Add(this.listBoxNewProblems);
             this.groupBox1.Controls.Add(this.richTextBoxNotes);
             this.groupBox1.Controls.Add(this.btnDeleteNote);
             this.groupBox1.Controls.Add(this.btnUpdateNote);
@@ -103,22 +103,6 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add/Edit/Delete Encounter Note";
-            // 
-            // richTextProblems
-            // 
-            this.richTextProblems.Location = new System.Drawing.Point(557, 40);
-            this.richTextProblems.Name = "richTextProblems";
-            this.richTextProblems.Size = new System.Drawing.Size(163, 169);
-            this.richTextProblems.TabIndex = 19;
-            this.richTextProblems.Text = "";
-            // 
-            // richTextBoxBPMeasurement
-            // 
-            this.richTextBoxBPMeasurement.Location = new System.Drawing.Point(737, 39);
-            this.richTextBoxBPMeasurement.Name = "richTextBoxBPMeasurement";
-            this.richTextBoxBPMeasurement.Size = new System.Drawing.Size(161, 170);
-            this.richTextBoxBPMeasurement.TabIndex = 18;
-            this.richTextBoxBPMeasurement.Text = "";
             // 
             // richTextBoxNotes
             // 
@@ -284,6 +268,24 @@
             this.btnStartNewNote.UseVisualStyleBackColor = true;
             this.btnStartNewNote.Click += new System.EventHandler(this.btnStartNewNote_Click);
             // 
+            // listBoxNewProblems
+            // 
+            this.listBoxNewProblems.FormattingEnabled = true;
+            this.listBoxNewProblems.ItemHeight = 18;
+            this.listBoxNewProblems.Location = new System.Drawing.Point(557, 51);
+            this.listBoxNewProblems.Name = "listBoxNewProblems";
+            this.listBoxNewProblems.Size = new System.Drawing.Size(168, 184);
+            this.listBoxNewProblems.TabIndex = 18;
+            // 
+            // listBoxBPMeasurements
+            // 
+            this.listBoxBPMeasurements.FormattingEnabled = true;
+            this.listBoxBPMeasurements.ItemHeight = 18;
+            this.listBoxBPMeasurements.Location = new System.Drawing.Point(737, 51);
+            this.listBoxBPMeasurements.Name = "listBoxBPMeasurements";
+            this.listBoxBPMeasurements.Size = new System.Drawing.Size(168, 184);
+            this.listBoxBPMeasurements.TabIndex = 19;
+            // 
             // EncounterNoteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -327,7 +329,7 @@
         private System.Windows.Forms.ListBox listOfPatients;
         private System.Windows.Forms.Button btnStartNewNote;
         private System.Windows.Forms.RichTextBox richTextBoxNotes;
-        private System.Windows.Forms.RichTextBox richTextBoxBPMeasurement;
-        private System.Windows.Forms.RichTextBox richTextProblems;
+        private System.Windows.Forms.ListBox listBoxBPMeasurements;
+        private System.Windows.Forms.ListBox listBoxNewProblems;
     }
 }

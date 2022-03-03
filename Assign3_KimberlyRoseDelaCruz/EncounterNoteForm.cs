@@ -21,8 +21,8 @@ namespace Assign3_KimberlyRoseDelaCruz
         }
 
         //private properties
-        private int countOfNotes = 0;
         private int noteId = 0;
+        private int countOfNotes = 0;
         private string name = "";
         private DateTime dateOfBirth = DateTime.Now;
         private string newProblem = "";
@@ -33,14 +33,15 @@ namespace Assign3_KimberlyRoseDelaCruz
         private  string successMsg = "";
         private bool resultOfListOfNotes = false;
         private string richTextNote = "";
-
+        string joinNotes = "";
         ValidationHelper newValidation = new ValidationHelper();
 
         private void EncounterNoteForm_Load(object sender, EventArgs e)
         {
-            dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
+            NoteManager newNote = new NoteManager();
 
-            List<EncounterNote> data = GetAllDataFromFile();
+            dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
+            List<EncounterNote> data = newNote.GetAllDataFromFile(out countOfNotes);
             foreach (var note in data)
             {
                 listOfPatients.Items.Add(note);
@@ -60,58 +61,41 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         }
 
-        public List<EncounterNote> GetAllDataFromFile()
-        {
-            string filePath = @"C:\PROG1815 - Programming 2\Assignment\Assignment3_KimberlyRoseDelaCruz\Assign3_KimberlyRoseDelaCruz\Assign3_KimberlyRoseDelaCruz\EncounterNotes\encounter-note.txt";
-
-            List<string> lines = File.ReadLines(filePath).ToList();
-
-            List<EncounterNote> encounterNotes = new List<EncounterNote>();
-
-            foreach (string line in lines)
-            {
-                encounterNotes.Add(new EncounterNote(line));
-                countOfNotes++;
-            }
-
-            return encounterNotes;
-        }
-
         private void listOfPatients_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string previousNoteId = txtBoxNoteId.Text;
-
-            EncounterNote patientRecords = (EncounterNote)listOfPatients.SelectedItem;
-            txtBoxNoteId.Text = patientRecords.NoteId.ToString();
-            txtBoxPatientName.Text = patientRecords.PatientName.ToString();
-            dateOfBirthPicker.Value = patientRecords.DateOfBirth;
-            string[] notes = patientRecords.ListOfNotes.ToArray();
-            string[] problems = patientRecords.NewProblem.Split(';');
-
-            //clear the all richtextboxes first with the previous values
-            richTextProblems.Clear();
-            richTextBoxBPMeasurement.Clear();
-            richTextBoxNotes.Clear();
-
-            //print all the values in the problems richtextbox
-            foreach(var problem in problems)
+            string errorMsg = "";
+            if(listOfPatients.SelectedIndex == -1)
             {
-                richTextProblems.Text += $"{problem.ToString()}\n";
+                errorMsg += "Please select list of notes in the listbox.";
+            }
+            else
+            {
+                string previousNoteId = txtBoxNoteId.Text;
+
+                EncounterNote patientRecords = (EncounterNote)listOfPatients.SelectedItem;
+                txtBoxNoteId.Text = patientRecords.NoteId.ToString();
+                txtBoxPatientName.Text = patientRecords.PatientName.ToString();
+                dateOfBirthPicker.Value = patientRecords.DateOfBirth;
+                string[] notes = patientRecords.ListOfNotes.ToArray();
+                string[] problems = patientRecords.NewProblem.Split(';');
+
+                //clear the all richtextboxes first with the previous values
+                listBoxNewProblems.Items.Clear();
+                listBoxBPMeasurements.Items.Clear();
+                richTextBoxNotes.Clear();
+
+                //print all the values in the problems richtextbox
+                listBoxNewProblems.Items.AddRange(problems);
+
+                //print all the values in the notes richtextbox
+                joinNotes = String.Join("\n", notes);
+                richTextBoxNotes.Text = joinNotes;
+
+                //change state to modify state of encounter note fields
+                ModifyStateMode(sender, e);
             }
 
-            //print all the values in the notes richtextbox
-            foreach (var note in notes)
-            {
-                var stringText += $"{note.ToString()}\n";
-
-                if (note.Contains("BP"))
-                {
-                    richTextBoxBPMeasurement.Text = $"{note}\n";
-                }
-            }
-
-            //change state to modify state of encounter note fields
-            ModifyStateMode(sender, e);
+            lblErrorMsg.Text = errorMsg;
         }
 
         private void btnUpdateNote_Click(object sender, EventArgs e)
@@ -126,8 +110,9 @@ namespace Assign3_KimberlyRoseDelaCruz
         {
             //create a identification of blood pressure extraction where it starts with BP from notes
             //where it should follow with 2-3 digits systolic over (/) 2-3 digits
-            listOfNotes.Clear();
             richTextNote = richTextBoxNotes.Text;
+            listOfNotes.Clear();
+            listBoxBPMeasurements.Items.Clear();
 
             //included 
             try
@@ -154,13 +139,13 @@ namespace Assign3_KimberlyRoseDelaCruz
                                 int systolicValue = int.Parse(bpValues[0]);
                                 int diastolicValue = int.Parse(bpValues[1]);
 
-                                if (bloodPressureText == "bp" &&
+                                if (bloodPressureText.Contains("bp") &&
                                     bloodPressureString[1].Contains('/') &&
                                     (bpValues[0].Length >= 2 || bpValues[0].Length <= 3) &&
                                     (bpValues[1].Length >= 2 || bpValues[1].Length <= 3) &&
                                     systolicValue > 0 && diastolicValue > 0)
                                 {
-                                    richTextBoxBPMeasurement.Text += $"{note}\n";
+                                    listBoxBPMeasurements.Items.Add(note);
                                 }
                             }
 
@@ -171,7 +156,7 @@ namespace Assign3_KimberlyRoseDelaCruz
                 }
                 else
                 {
-                    richTextBoxBPMeasurement.Clear();
+                    listBoxBPMeasurements.Items.Clear();
                 }
 
             }catch (Exception ex)
@@ -205,8 +190,8 @@ namespace Assign3_KimberlyRoseDelaCruz
             dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
 
             txtBoxNewProblem.Text = "";
-            richTextProblems.Clear();
-            richTextBoxBPMeasurement.Clear();
+            listBoxNewProblems.Items.Clear();
+            listBoxBPMeasurements.Items.Clear();
             richTextBoxNotes.Text = "";
 
             txtBoxNoteId.Enabled = false;
@@ -231,8 +216,8 @@ namespace Assign3_KimberlyRoseDelaCruz
             dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
 
             txtBoxNewProblem.Text = "";
-            richTextProblems.Clear();
-            richTextBoxBPMeasurement.Clear();
+            listBoxNewProblems.Items.Clear();
+            listBoxBPMeasurements.Items.Clear();
             richTextBoxNotes.Text = "";
 
             txtBoxNoteId.Enabled = false;
@@ -256,7 +241,10 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         private void btnAddNote_Click(object sender, EventArgs e)
         {
-            EncounterNote newPatientNote = new EncounterNote(noteId, name, dateOfBirth, listOfNewProblems, listOfNewProblems);
+            listOfNotes.Clear();
+            listOfNewProblems.Clear();
+
+            EncounterNote newPatientNote = new EncounterNote(noteId, name, dateOfBirth, listOfNewProblems, listOfNotes);
 
             //validate name field
             name = txtBoxPatientName.Text;
@@ -273,7 +261,10 @@ namespace Assign3_KimberlyRoseDelaCruz
             }
 
             //validate date field
+
             dateOfBirth = dateOfBirthPicker.Value;
+            dateOfBirth.ToString("dd MMM yyyy");
+
             bool resultOfDateOfBirth = newValidation.IsDateOfBirthValid(dateOfBirth);
 
             if (resultOfDateOfBirth == false)
@@ -301,11 +292,9 @@ namespace Assign3_KimberlyRoseDelaCruz
                 errorMsg += "Note is required.";
             }
 
-            string[] listOfProblems = richTextProblems.Text.Split('\n');
-            listOfProblems = listOfProblems.Where(x =>!string.IsNullOrEmpty(x)).ToArray();
+            string[] problems = listBoxNewProblems.Items.Cast<string>().ToArray();
+            listOfNewProblems.AddRange(problems);
 
-            listOfNewProblems.AddRange(listOfProblems);
-            
             if(resultOfName == true &&
                 resultOfDateOfBirth == true &&
                 resultOfListOfNotes == true)
@@ -317,14 +306,22 @@ namespace Assign3_KimberlyRoseDelaCruz
 
                 if(listOfNewProblems != null)
                 {
-                    newPatientNote.ListOfNewProblems.AddRange(listOfNewProblems);
+                    newPatientNote.ListOfNewProblems = listOfNewProblems;
                 }
 
                 if(listOfNotes != null)
                 {
-                    newPatientNote.ListOfNotes.AddRange(listOfNotes);
+                    newPatientNote.ListOfNotes = listOfNotes;
                 }
 
+                string fullText = newPatientNote.FormatEncounterNoteToDataRow();
+
+                //add the new record in the listOfPatients listbox then get all listOfPatients to be written in the text file       
+                listOfPatients.Items.Add(newPatientNote);
+
+                NoteManager updateNote = new NoteManager();
+                updateNote.UpdateDataToTextFile(fullText);
+                
             }
 
             lblErrorMsg.Text = errorMsg;
@@ -336,7 +333,7 @@ namespace Assign3_KimberlyRoseDelaCruz
             //if there is new problem add in the richtextproblems
             string newProblemText = txtBoxNewProblem.Text;
 
-            richTextProblems.Text += $"{newProblemText}\n";
+            listBoxNewProblems.Items.Add(newProblemText);
             txtBoxNewProblem.Text = "";        
         }
     }

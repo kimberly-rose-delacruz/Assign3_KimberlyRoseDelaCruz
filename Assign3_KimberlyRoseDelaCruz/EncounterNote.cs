@@ -42,6 +42,17 @@ namespace Assign3_KimberlyRoseDelaCruz
         }
 
 
+        public string FormatEncounterNoteToDataRow()
+        {
+            string newProblemsFormatted = string.Join(";", this.ListOfNewProblems);
+            string notesFormatter = string.Join(";", this.ListOfNotes);
+
+
+            string fullText = $"{this.NoteId}|{this.PatientName}|{this.DateOfBirth.ToString("dd MMM yyyy")}|{newProblemsFormatted}|{notesFormatter}";
+
+            return fullText;
+        }
+
         public override string ToString()
         {
             return $"{this.PatientName} (Note:{this.NoteId})";
