@@ -31,6 +31,8 @@
             this.lblSuccessMsg = new System.Windows.Forms.Label();
             this.lblErrorMsg = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.listBoxBPMeasurements = new System.Windows.Forms.ListBox();
+            this.listBoxNewProblems = new System.Windows.Forms.ListBox();
             this.richTextBoxNotes = new System.Windows.Forms.RichTextBox();
             this.btnDeleteNote = new System.Windows.Forms.Button();
             this.btnUpdateNote = new System.Windows.Forms.Button();
@@ -47,10 +49,8 @@
             this.lblPatientName = new System.Windows.Forms.Label();
             this.txtBoxNoteId = new System.Windows.Forms.TextBox();
             this.lblNoteID = new System.Windows.Forms.Label();
-            this.listOfPatients = new System.Windows.Forms.ListBox();
+            this.listOfPatientsNotes = new System.Windows.Forms.ListBox();
             this.btnStartNewNote = new System.Windows.Forms.Button();
-            this.listBoxNewProblems = new System.Windows.Forms.ListBox();
-            this.listBoxBPMeasurements = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -103,6 +103,24 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add/Edit/Delete Encounter Note";
+            // 
+            // listBoxBPMeasurements
+            // 
+            this.listBoxBPMeasurements.FormattingEnabled = true;
+            this.listBoxBPMeasurements.ItemHeight = 18;
+            this.listBoxBPMeasurements.Location = new System.Drawing.Point(737, 51);
+            this.listBoxBPMeasurements.Name = "listBoxBPMeasurements";
+            this.listBoxBPMeasurements.Size = new System.Drawing.Size(168, 184);
+            this.listBoxBPMeasurements.TabIndex = 19;
+            // 
+            // listBoxNewProblems
+            // 
+            this.listBoxNewProblems.FormattingEnabled = true;
+            this.listBoxNewProblems.ItemHeight = 18;
+            this.listBoxNewProblems.Location = new System.Drawing.Point(557, 51);
+            this.listBoxNewProblems.Name = "listBoxNewProblems";
+            this.listBoxNewProblems.Size = new System.Drawing.Size(168, 184);
+            this.listBoxNewProblems.TabIndex = 18;
             // 
             // richTextBoxNotes
             // 
@@ -246,16 +264,16 @@
             this.lblNoteID.TabIndex = 0;
             this.lblNoteID.Text = "NoteID:";
             // 
-            // listOfPatients
+            // listOfPatientsNotes
             // 
-            this.listOfPatients.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.listOfPatients.FormattingEnabled = true;
-            this.listOfPatients.ItemHeight = 18;
-            this.listOfPatients.Location = new System.Drawing.Point(40, 59);
-            this.listOfPatients.Name = "listOfPatients";
-            this.listOfPatients.Size = new System.Drawing.Size(233, 616);
-            this.listOfPatients.TabIndex = 6;
-            this.listOfPatients.SelectedIndexChanged += new System.EventHandler(this.listOfPatients_SelectedIndexChanged);
+            this.listOfPatientsNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.listOfPatientsNotes.FormattingEnabled = true;
+            this.listOfPatientsNotes.ItemHeight = 18;
+            this.listOfPatientsNotes.Location = new System.Drawing.Point(40, 59);
+            this.listOfPatientsNotes.Name = "listOfPatientsNotes";
+            this.listOfPatientsNotes.Size = new System.Drawing.Size(233, 616);
+            this.listOfPatientsNotes.TabIndex = 6;
+            this.listOfPatientsNotes.SelectedIndexChanged += new System.EventHandler(this.listOfPatientsNotes_SelectedIndexChanged_1);
             // 
             // btnStartNewNote
             // 
@@ -268,24 +286,6 @@
             this.btnStartNewNote.UseVisualStyleBackColor = true;
             this.btnStartNewNote.Click += new System.EventHandler(this.btnStartNewNote_Click);
             // 
-            // listBoxNewProblems
-            // 
-            this.listBoxNewProblems.FormattingEnabled = true;
-            this.listBoxNewProblems.ItemHeight = 18;
-            this.listBoxNewProblems.Location = new System.Drawing.Point(557, 51);
-            this.listBoxNewProblems.Name = "listBoxNewProblems";
-            this.listBoxNewProblems.Size = new System.Drawing.Size(168, 184);
-            this.listBoxNewProblems.TabIndex = 18;
-            // 
-            // listBoxBPMeasurements
-            // 
-            this.listBoxBPMeasurements.FormattingEnabled = true;
-            this.listBoxBPMeasurements.ItemHeight = 18;
-            this.listBoxBPMeasurements.Location = new System.Drawing.Point(737, 51);
-            this.listBoxBPMeasurements.Name = "listBoxBPMeasurements";
-            this.listBoxBPMeasurements.Size = new System.Drawing.Size(168, 184);
-            this.listBoxBPMeasurements.TabIndex = 19;
-            // 
             // EncounterNoteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -294,7 +294,7 @@
             this.Controls.Add(this.lblSuccessMsg);
             this.Controls.Add(this.lblErrorMsg);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.listOfPatients);
+            this.Controls.Add(this.listOfPatientsNotes);
             this.Controls.Add(this.btnStartNewNote);
             this.Name = "EncounterNoteForm";
             this.Text = "EncounterNoteForm";
@@ -326,7 +326,7 @@
         private System.Windows.Forms.Label lblPatientName;
         private System.Windows.Forms.TextBox txtBoxNoteId;
         private System.Windows.Forms.Label lblNoteID;
-        private System.Windows.Forms.ListBox listOfPatients;
+        private System.Windows.Forms.ListBox listOfPatientsNotes;
         private System.Windows.Forms.Button btnStartNewNote;
         private System.Windows.Forms.RichTextBox richTextBoxNotes;
         private System.Windows.Forms.ListBox listBoxBPMeasurements;

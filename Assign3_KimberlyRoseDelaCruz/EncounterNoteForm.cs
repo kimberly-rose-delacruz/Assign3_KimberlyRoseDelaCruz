@@ -25,10 +25,8 @@ namespace Assign3_KimberlyRoseDelaCruz
         private int countOfNotes = 0;
         private string name = "";
         private DateTime dateOfBirth = DateTime.Now;
-        private string newProblem = "";
         private List<string> listOfNewProblems = new List<string>();
         private List<string> listOfNotes  = new List<string>();
-        private string bpMeasurement = "";
         private string errorMsg = "";
         private  string successMsg = "";
         private bool resultOfListOfNotes = false;
@@ -44,7 +42,7 @@ namespace Assign3_KimberlyRoseDelaCruz
             List<EncounterNote> data = newNote.GetAllDataFromFile(out countOfNotes);
             foreach (var note in data)
             {
-                listOfPatients.Items.Add(note);
+                listOfPatientsNotes.Items.Add(note);
             }
 
             txtBoxNoteId.Enabled = false;
@@ -61,10 +59,12 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         }
 
-        private void listOfPatients_SelectedIndexChanged(object sender, EventArgs e)
+        private void listOfPatientsNotes_SelectedIndexChanged_1(object sender, EventArgs e)
         {
+            lblErrorMsg.Text = "";
+            lblSuccessMsg.Text = "";
             string errorMsg = "";
-            if(listOfPatients.SelectedIndex == -1)
+            if(listOfPatientsNotes.SelectedIndex == -1)
             {
                 errorMsg += "Please select list of notes in the listbox.";
             }
@@ -72,12 +72,12 @@ namespace Assign3_KimberlyRoseDelaCruz
             {
                 string previousNoteId = txtBoxNoteId.Text;
 
-                EncounterNote patientRecords = (EncounterNote)listOfPatients.SelectedItem;
+                EncounterNote patientRecords = (EncounterNote)listOfPatientsNotes.SelectedItem;
                 txtBoxNoteId.Text = patientRecords.NoteId.ToString();
                 txtBoxPatientName.Text = patientRecords.PatientName.ToString();
                 dateOfBirthPicker.Value = patientRecords.DateOfBirth;
                 string[] notes = patientRecords.ListOfNotes.ToArray();
-                string[] problems = patientRecords.NewProblem.Split(';');
+                string[] problems = patientRecords.ListOfNewProblems.ToArray();
 
                 //clear the all richtextboxes first with the previous values
                 listBoxNewProblems.Items.Clear();
@@ -99,11 +99,96 @@ namespace Assign3_KimberlyRoseDelaCruz
         }
 
         private void btnUpdateNote_Click(object sender, EventArgs e)
-        {   
-            EncounterNote patientRecords = (EncounterNote)listOfPatients.SelectedItem;
+        {
+            lblErrorMsg.Text = "";
+            lblSuccessMsg.Text = "";
+            listOfNotes.Clear();
+            listOfNewProblems.Clear();
 
-            patientRecords.PatientName = txtBoxPatientName.Text;
-            //to do for updating the values of fields for selected note
+            //declare variables for update of fields
+            string updateName = "";
+            DateTime updateDateOfBirth = DateTime.Now;
+            string updateRichTextNote = "";
+            EncounterNote patientRecords = (EncounterNote)listOfPatientsNotes.SelectedItem;
+
+            //validate updated name in the textbox if correct or not
+            updateName = txtBoxPatientName.Text;
+
+            bool resultOfName = newValidation.IsNameValid(updateName);
+            if (updateName == string.Empty)
+            {
+                errorMsg += "Patient Name is required.\n";
+            }
+            else if (resultOfName == false)
+            {
+                errorMsg += "Patient Name is invalid. Format of Name should be First Name + Last Name.\n";
+            }
+
+            //validate updated date of birth 
+
+            updateDateOfBirth = dateOfBirthPicker.Value;
+            updateDateOfBirth.ToString("dd MMM yyyy");
+
+            bool resultOfDateOfBirth = newValidation.IsDateOfBirthValid(updateDateOfBirth);
+
+            if (resultOfDateOfBirth == false)
+            {
+                errorMsg += "Patient Date Of Birth is invalid.\n";
+
+            }
+
+            //validate if updated listOfNotes have been added as an update on note
+            updateRichTextNote = richTextBoxNotes.Text;
+
+            if (updateRichTextNote == string.Empty)
+            {
+                resultOfListOfNotes = newValidation.IsListOfNotesValid(listOfNotes);
+            }
+            else
+            {
+                string[] updatedNotes = updateRichTextNote.Split('\n');
+                listOfNotes.AddRange(updatedNotes);
+                resultOfListOfNotes = newValidation.IsListOfNotesValid(listOfNotes);
+            }
+
+            if (resultOfListOfNotes == false)
+            {
+                errorMsg += "Note is required.";
+            }
+
+            //prepare list of problems if there is added new problem
+            string[] updatedProblems = listBoxNewProblems.Items.Cast<string>().ToArray();
+            listOfNewProblems.AddRange(updatedProblems);
+
+            if (resultOfName == true &&
+                resultOfDateOfBirth == true &&
+                resultOfListOfNotes == true)
+            {
+                //add the noteId from the textbox stored from create mode state
+                patientRecords.NoteId = int.Parse(txtBoxNoteId.Text);
+                patientRecords.PatientName = updateName;
+                patientRecords.DateOfBirth = updateDateOfBirth;
+
+                if (listOfNewProblems != null)
+                {
+                    patientRecords.ListOfNewProblems = listOfNewProblems;
+                }
+
+                if (listOfNotes != null)
+                {
+                    patientRecords.ListOfNotes = listOfNotes;
+                }
+
+                NoteManager updateNote = new NoteManager();
+                var patientsNotes = listOfPatientsNotes.Items.Cast<EncounterNote>();
+
+                string patientNotesInString = String.Join("\n", patientsNotes.Select(x => x.FormatEncounterNoteToDataRow()));
+
+                successMsg += "Note has been updated successfully.";
+
+
+            }
+
         }
 
         private void richTextBoxNotes_TextChanged(object sender, EventArgs e)
@@ -143,7 +228,7 @@ namespace Assign3_KimberlyRoseDelaCruz
                                     bloodPressureString[1].Contains('/') &&
                                     (bpValues[0].Length >= 2 || bpValues[0].Length <= 3) &&
                                     (bpValues[1].Length >= 2 || bpValues[1].Length <= 3) &&
-                                    systolicValue > 0 && diastolicValue > 0)
+                                    systolicValue >= 10 && diastolicValue >= 10)
                                 {
                                     listBoxBPMeasurements.Items.Add(note);
                                 }
@@ -205,8 +290,6 @@ namespace Assign3_KimberlyRoseDelaCruz
             btnAddNote.Enabled = true;
             btnUpdateNote.Enabled = false;
             btnDeleteNote.Enabled = false;
-            lblErrorMsg.Text = "";
-            lblSuccessMsg.Text = "";
         }
 
         private void BrowseStateMode(object sender, EventArgs e)
@@ -229,18 +312,21 @@ namespace Assign3_KimberlyRoseDelaCruz
             btnUpdateNote.Enabled = false;
             btnDeleteNote.Enabled = false;
             dateOfBirthPicker.Enabled = false;
-            lblErrorMsg.Text = "";
-            lblSuccessMsg.Text = "";
+
         }
 
         private void btnStartNewNote_Click(object sender, EventArgs e)
         {
             //call this method to change the state of the encounter note form
+            lblErrorMsg.Text = "";
+            lblSuccessMsg.Text = "";
             CreateStateMode(sender, e);
         }
 
         private void btnAddNote_Click(object sender, EventArgs e)
         {
+            lblErrorMsg.Text = "";
+            lblSuccessMsg.Text = "";
             listOfNotes.Clear();
             listOfNewProblems.Clear();
 
@@ -248,8 +334,6 @@ namespace Assign3_KimberlyRoseDelaCruz
 
             //validate name field
             name = txtBoxPatientName.Text;
-
-
             bool resultOfName = newValidation.IsNameValid(name);
             if (name == string.Empty)
             {
@@ -316,13 +400,18 @@ namespace Assign3_KimberlyRoseDelaCruz
 
                 string fullText = newPatientNote.FormatEncounterNoteToDataRow();
 
-                //add the new record in the listOfPatients listbox then get all listOfPatients to be written in the text file       
-                listOfPatients.Items.Add(newPatientNote);
+                //add the new record in the listOfPatientsNotes listbox then get all listOfPatientsNotes to be written in the text file       
+                listOfPatientsNotes.Items.Add(newPatientNote);
 
                 NoteManager updateNote = new NoteManager();
                 updateNote.UpdateDataToTextFile(fullText);
+
+                successMsg += "Note has been added successfully.";
+
                 
             }
+
+            BrowseStateMode(sender, e);
 
             lblErrorMsg.Text = errorMsg;
             lblSuccessMsg.Text = successMsg;

@@ -26,7 +26,8 @@ namespace Assign3_KimberlyRoseDelaCruz
             this.NoteId = int.Parse(arrayOfNotes[0]);
             this.PatientName = arrayOfNotes[1];
             this.DateOfBirth = DateTime.Parse(arrayOfNotes[2]);
-            this.NewProblem = arrayOfNotes[3];
+            string[] listProblems = arrayOfNotes[3].Split(';');
+            ListOfNewProblems.AddRange(listProblems);
             string[] listNotes = arrayOfNotes[4].Split(';');
             ListOfNotes.AddRange(listNotes);
         }

@@ -2,3 +2,6 @@
 2|Bart Simpson|11 Feb 1991|UTI;High Blood Pressure|BP: 180/90;;Tozam once a day
 3|Kimberly Delacruz|24 Nov 2021|problemA;problemB|BP 120/23;Liver Malfunction;BP 190/23
 4|Abel DelaCruz|01 Mar 2022|problemZ|infection wound;BP 200/90
+5|Lily Aldrins|14 Dec 2021|problem1;problem2|BP 120/20;liver problem
+6|Barney Stinson|01 Feb 2022|problemA;problem2|concussion pain in the head;tylenol 2x a day;BP 190/20
+7|Ted Mosby|14 Jan 2020|problemA;problem2|cord coil;BP 120/20;Paracetamol 2x a day
