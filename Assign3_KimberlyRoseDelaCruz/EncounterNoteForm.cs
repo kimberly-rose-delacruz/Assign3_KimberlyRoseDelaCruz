@@ -1,4 +1,11 @@
-﻿/*
+﻿/*Program ID: Assign3_KimberlyRoseDelaCruz.cs
+ * 
+ * Purpose: To program an assignment about File i/o, OOP concepts and Collections
+ * 
+ * Revision History:
+ *          Debugging and Fixing bugs on March 5, 2022 by Kim
+ *          Testing on March 4, 2022 by Kim
+ *          Created on March 3, 2022 by Kimberly Dela Cruz
  */
 using System;
 using System.Collections.Generic;
@@ -22,13 +29,10 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         //private properties
         private int noteId = 0;
-        private int countOfNotes = 0;
         private string name = "";
         private DateTime dateOfBirth = DateTime.Now;
         private List<string> listOfNewProblems = new List<string>();
-        private List<string> listOfNotes  = new List<string>();
-        private string errorMsg = "";
-        private  string successMsg = "";
+        private List<string> listOfNotes = new List<string>();
         private bool resultOfListOfNotes = false;
         private string richTextNote = "";
         string joinNotes = "";
@@ -39,7 +43,9 @@ namespace Assign3_KimberlyRoseDelaCruz
             NoteManager newNote = new NoteManager();
 
             dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
-            List<EncounterNote> data = newNote.GetAllDataFromFile(out countOfNotes);
+            dateOfBirthPicker.Value = DateTime.Now;
+
+            List<EncounterNote> data = newNote.GetAllDataFromFile();
             foreach (var note in data)
             {
                 listOfPatientsNotes.Items.Add(note);
@@ -61,28 +67,32 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         private void listOfPatientsNotes_SelectedIndexChanged_1(object sender, EventArgs e)
         {
+            listBoxNewProblems.Items.Clear();
+            listBoxBPMeasurements.Items.Clear();
+
+            //condition where if the selectedItem is null skip the logic
+            if (listOfPatientsNotes.SelectedItem == null)
+            {
+                return;
+
+            }
+
             lblErrorMsg.Text = "";
             lblSuccessMsg.Text = "";
             string errorMsg = "";
-            if(listOfPatientsNotes.SelectedIndex == -1)
+
+            if (listOfPatientsNotes.SelectedIndex == -1)
             {
                 errorMsg += "Please select list of notes in the listbox.";
             }
             else
             {
-                string previousNoteId = txtBoxNoteId.Text;
-
                 EncounterNote patientRecords = (EncounterNote)listOfPatientsNotes.SelectedItem;
                 txtBoxNoteId.Text = patientRecords.NoteId.ToString();
                 txtBoxPatientName.Text = patientRecords.PatientName.ToString();
                 dateOfBirthPicker.Value = patientRecords.DateOfBirth;
                 string[] notes = patientRecords.ListOfNotes.ToArray();
                 string[] problems = patientRecords.ListOfNewProblems.ToArray();
-
-                //clear the all richtextboxes first with the previous values
-                listBoxNewProblems.Items.Clear();
-                listBoxBPMeasurements.Items.Clear();
-                richTextBoxNotes.Clear();
 
                 //print all the values in the problems richtextbox
                 listBoxNewProblems.Items.AddRange(problems);
@@ -104,12 +114,13 @@ namespace Assign3_KimberlyRoseDelaCruz
             lblSuccessMsg.Text = "";
             listOfNotes.Clear();
             listOfNewProblems.Clear();
-
+            string errorMsg = "";
+            string successMsg = "";
             //declare variables for update of fields
             string updateName = "";
             DateTime updateDateOfBirth = DateTime.Now;
             string updateRichTextNote = "";
-            EncounterNote patientRecords = (EncounterNote)listOfPatientsNotes.SelectedItem;
+            EncounterNote updatePatientNotes = (EncounterNote)listOfPatientsNotes.SelectedItem;
 
             //validate updated name in the textbox if correct or not
             updateName = txtBoxPatientName.Text;
@@ -165,30 +176,39 @@ namespace Assign3_KimberlyRoseDelaCruz
                 resultOfListOfNotes == true)
             {
                 //add the noteId from the textbox stored from create mode state
-                patientRecords.NoteId = int.Parse(txtBoxNoteId.Text);
-                patientRecords.PatientName = updateName;
-                patientRecords.DateOfBirth = updateDateOfBirth;
+                updatePatientNotes.NoteId = int.Parse(txtBoxNoteId.Text);
+                updatePatientNotes.PatientName = updateName;
+                updatePatientNotes.DateOfBirth = updateDateOfBirth;
 
                 if (listOfNewProblems != null)
                 {
-                    patientRecords.ListOfNewProblems = listOfNewProblems;
+                    updatePatientNotes.ListOfNewProblems = listOfNewProblems;
                 }
 
                 if (listOfNotes != null)
                 {
-                    patientRecords.ListOfNotes = listOfNotes;
+                    updatePatientNotes.ListOfNotes = listOfNotes;
                 }
 
                 NoteManager updateNote = new NoteManager();
                 var patientsNotes = listOfPatientsNotes.Items.Cast<EncounterNote>();
 
-                string patientNotesInString = String.Join("\n", patientsNotes.Select(x => x.FormatEncounterNoteToDataRow()));
+                string joinedPatientsNotes = String.Join("\n", patientsNotes.Select(x => x.FormatEncounterNoteToDataRow()));
 
-                successMsg += "Note has been updated successfully.";
+                //write all text to the file with the updated note.
+                updateNote.WriteAllDataToTextFile(joinedPatientsNotes);
 
+                listOfPatientsNotes.Items.Clear();
 
+                EncounterNoteForm_Load(sender, e);
+
+                successMsg = "Note has been updated successfully.";
             }
 
+            BrowseStateMode(sender, e);
+
+            lblErrorMsg.Text = errorMsg;
+            lblSuccessMsg.Text = successMsg;
         }
 
         private void richTextBoxNotes_TextChanged(object sender, EventArgs e)
@@ -207,7 +227,7 @@ namespace Assign3_KimberlyRoseDelaCruz
                     string[] notes = richTextNote.Split('\n');
                     notes = notes.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                     listOfNotes.AddRange(notes);
- 
+
                     foreach (var note in listOfNotes)
                     {
                         string noteLowerCase = note.ToLower();
@@ -244,9 +264,10 @@ namespace Assign3_KimberlyRoseDelaCruz
                     listBoxBPMeasurements.Items.Clear();
                 }
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine("Something Went Wrong",ex.Message);
+                Console.WriteLine("Something Went Wrong", ex.Message);
             }
 
         }
@@ -269,9 +290,13 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         private void CreateStateMode(object sender, EventArgs e)
         {
-            int countOfSuccedingNote = countOfNotes + 1; //increment the noteId by 1 according to the updated list of notes.
-            txtBoxNoteId.Text = countOfSuccedingNote.ToString();
+            var patientsNotes = listOfPatientsNotes.Items.Cast<EncounterNote>();
+            int noteIdNumber = patientsNotes.Select(x => x.NoteId).Max();
+            int uniqueNoteId = noteIdNumber + 1; //increment the noteId by 1 according to the updated list of notes.
+
+            txtBoxNoteId.Text = uniqueNoteId.ToString();
             txtBoxPatientName.Text = "";
+            dateOfBirthPicker.Value = DateTime.Now;
             dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
 
             txtBoxNewProblem.Text = "";
@@ -290,13 +315,16 @@ namespace Assign3_KimberlyRoseDelaCruz
             btnAddNote.Enabled = true;
             btnUpdateNote.Enabled = false;
             btnDeleteNote.Enabled = false;
+
         }
 
         private void BrowseStateMode(object sender, EventArgs e)
         {
             txtBoxNoteId.Text = "";
             txtBoxPatientName.Text = "";
+            dateOfBirthPicker.Value = DateTime.Now;
             dateOfBirthPicker.CustomFormat = "dd MMM yyyy";
+
 
             txtBoxNewProblem.Text = "";
             listBoxNewProblems.Items.Clear();
@@ -312,7 +340,6 @@ namespace Assign3_KimberlyRoseDelaCruz
             btnUpdateNote.Enabled = false;
             btnDeleteNote.Enabled = false;
             dateOfBirthPicker.Enabled = false;
-
         }
 
         private void btnStartNewNote_Click(object sender, EventArgs e)
@@ -325,10 +352,14 @@ namespace Assign3_KimberlyRoseDelaCruz
 
         private void btnAddNote_Click(object sender, EventArgs e)
         {
-            lblErrorMsg.Text = "";
-            lblSuccessMsg.Text = "";
+            string errorMsg = "";
+            string successMsg = "";
+            List<string> newListOfNotes = new List<string>();
+
             listOfNotes.Clear();
             listOfNewProblems.Clear();
+            lblErrorMsg.Text = errorMsg;
+            lblSuccessMsg.Text = successMsg;
 
             EncounterNote newPatientNote = new EncounterNote(noteId, name, dateOfBirth, listOfNewProblems, listOfNotes);
 
@@ -339,7 +370,7 @@ namespace Assign3_KimberlyRoseDelaCruz
             {
                 errorMsg += "Patient Name is required.\n";
             }
-            else if(resultOfName == false)
+            else if (resultOfName == false)
             {
                 errorMsg += "Patient Name is invalid. Format of Name should be First Name + Last Name.\n";
             }
@@ -358,28 +389,28 @@ namespace Assign3_KimberlyRoseDelaCruz
             }
 
             //validate if listOfNotes have been added as new note
-            richTextNote = richTextBoxNotes.Text;           
+            richTextNote = richTextBoxNotes.Text;
 
             if (richTextNote == string.Empty)
             {
-                resultOfListOfNotes = newValidation.IsListOfNotesValid(listOfNotes);
+                errorMsg += "Note is required.";
             }
             else
             {
                 string[] notes = richTextNote.Split('\n');
-                listOfNotes.AddRange(notes);
+                newListOfNotes.AddRange(notes);
                 resultOfListOfNotes = newValidation.IsListOfNotesValid(listOfNotes);
+                if (resultOfListOfNotes == false)
+                {
+                    errorMsg += "Note is invalid.";
+                }
             }
 
-            if (resultOfListOfNotes == false)
-            {
-                errorMsg += "Note is required.";
-            }
 
             string[] problems = listBoxNewProblems.Items.Cast<string>().ToArray();
             listOfNewProblems.AddRange(problems);
 
-            if(resultOfName == true &&
+            if (resultOfName == true &&
                 resultOfDateOfBirth == true &&
                 resultOfListOfNotes == true)
             {
@@ -388,14 +419,14 @@ namespace Assign3_KimberlyRoseDelaCruz
                 newPatientNote.PatientName = name;
                 newPatientNote.DateOfBirth = dateOfBirth;
 
-                if(listOfNewProblems != null)
+                if (listOfNewProblems != null)
                 {
                     newPatientNote.ListOfNewProblems = listOfNewProblems;
                 }
 
-                if(listOfNotes != null)
+                if (newListOfNotes != null)
                 {
-                    newPatientNote.ListOfNotes = listOfNotes;
+                    newPatientNote.ListOfNotes = newListOfNotes;
                 }
 
                 string fullText = newPatientNote.FormatEncounterNoteToDataRow();
@@ -406,12 +437,12 @@ namespace Assign3_KimberlyRoseDelaCruz
                 NoteManager updateNote = new NoteManager();
                 updateNote.UpdateDataToTextFile(fullText);
 
-                successMsg += "Note has been added successfully.";
+                successMsg = "Note has been added successfully.";
 
-                
+                BrowseStateMode(sender, e);
+
             }
 
-            BrowseStateMode(sender, e);
 
             lblErrorMsg.Text = errorMsg;
             lblSuccessMsg.Text = successMsg;
@@ -423,7 +454,39 @@ namespace Assign3_KimberlyRoseDelaCruz
             string newProblemText = txtBoxNewProblem.Text;
 
             listBoxNewProblems.Items.Add(newProblemText);
-            txtBoxNewProblem.Text = "";        
+            txtBoxNewProblem.Text = "";
+        }
+
+        private void btnDeleteNote_Click(object sender, EventArgs e)
+        {
+            //Clear the data and form labels
+            lblErrorMsg.Text = "";
+            lblSuccessMsg.Text = "";
+            listOfNotes.Clear();
+            listOfNewProblems.Clear();
+            string successMsg = "";
+
+            //get all the data from the listOfPatientsNotes to get the selectem item for deletion
+
+            listOfPatientsNotes.Items.Remove(listOfPatientsNotes.SelectedItem);
+
+            NoteManager deleteNote = new NoteManager();
+
+            var patientsNotes = listOfPatientsNotes.Items.Cast<EncounterNote>();
+
+            string joinedPatientsNotes = String.Join("\n", patientsNotes.Select(x => x.FormatEncounterNoteToDataRow()));
+
+            //write all text to the file with the updated note.
+            deleteNote.WriteAllDataToTextFile(joinedPatientsNotes);
+
+            listOfPatientsNotes.Items.Clear();
+
+            EncounterNoteForm_Load(sender, e);
+            successMsg = "Note has been deleted successfully.";
+
+            BrowseStateMode(sender, e);
+
+            lblSuccessMsg.Text = successMsg;
         }
     }
 }

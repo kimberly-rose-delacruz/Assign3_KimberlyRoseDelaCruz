@@ -1,7 +1,22 @@
-1|Homer Simpson|10 Jan 1993|Liver Failure;Hypertension|BP: 120/80;;liver failure recovery
-2|Bart Simpson|11 Feb 1991|UTI;High Blood Pressure|BP: 180/90;;Tozam once a day
+1|Homer Simpsoneditkd|03 Nov 1992|Liver Failure;Hypertension;problemAddedUpdate;problemB|BP: 120/80;;liver failure recovery;;liver function is still healty;BP 110/20;BP 90/100
+2|Bart SimpsonABCDE|01 Feb 1991|UTI;High Blood Pressure;problemABC;AbcProblem|BP: 180/90;;Tozam once a day;;BP 100/70;;Cured High Blood;BP 80/90
 3|Kimberly Delacruz|24 Nov 2021|problemA;problemB|BP 120/23;Liver Malfunction;BP 190/23
-4|Abel DelaCruz|01 Mar 2022|problemZ|infection wound;BP 200/90
-5|Lily Aldrins|14 Dec 2021|problem1;problem2|BP 120/20;liver problem
+4|Abel DelaCruz|23 Feb 2022|problemZ;testprob;yrdy|infection wound;BP 200/90;infection cured;BP 110/80;
 6|Barney Stinson|01 Feb 2022|problemA;problem2|concussion pain in the head;tylenol 2x a day;BP 190/20
-7|Ted Mosby|14 Jan 2020|problemA;problem2|cord coil;BP 120/20;Paracetamol 2x a day
+7|Marshall Eriksen|13 Dec 2021|problemA|BP 120/20;skin asthma
+8|Ted Mosby|01 Mar 2022|newproblemA|Bp 120/20;head concussion
+9|Robin Sparkles|28 Feb 2022|newproblemBBBB|High Fever;Tylenol 2x a day;BP 150/60
+10|Bob Chan|14 Feb 2022|testproblem|BP 120/20;note prescription #1
+11|Alice Wonderland|11 Jan 2022|testproblemC|BP 190/20;Spinal Displacement
+12|Mikabela Anderson|28 Feb 2022|etest|BP 120/23
+13|Jess Badanamu|05 Jan 2022|testproblemA;problem 3|BP 190/27;Leg Cramps;Pain Relieve 1x a day
+14|FatCat Mat|22 Feb 2022|testproblmA|BP 10/23;Overeating;Apple Cider Vinegar;Balance Meal Diet
+15|Curly Badanamu|01 Mar 2022|newProblemTestA|test problem 1;citron tea;StomachAche;BP 120/20
+16|Abby Badanamu|21 Jan 2022|newproblemD|BP 180/22;High Fever;Tylenol 3x a day
+17|Onitsuka Ai|03 Jan 2022|testproblm1|BP 160/23;Sprain Ankle;
+18|Monkey DLuffy|02 Mar 2022|test|BP 160/23;Test Problem 1
+19|Ellise Philips|01 Mar 2022|test222|Bp 150/23;Test Sickness123
+20|Ferdi Surname|07 Feb 2022|testtest|BP 102/23;Test Problem123
+21|Joseph Martinez|01 Mar 2022|testproblem|BP 120/23;Test Problem
+22|tsubasa riko|28 Feb 2022|test|BP 120/23
+23|Pedro Martinez|01 Mar 2022|testproblnA|BP 190/23;;Blood Extraction Positive O

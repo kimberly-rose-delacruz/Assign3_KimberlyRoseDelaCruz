@@ -13,9 +13,8 @@ namespace Assign3_KimberlyRoseDelaCruz
          
 
         //Reading all data from text file to be stored into the EncounterNote Class
-        public List<EncounterNote> GetAllDataFromFile(out int countOfNotes)
+        public List<EncounterNote> GetAllDataFromFile()
         {
-            countOfNotes = 0;
             List<string> lines = File.ReadLines(filePath).ToList();
 
             List<EncounterNote> encounterNotes = new List<EncounterNote>();
@@ -23,7 +22,6 @@ namespace Assign3_KimberlyRoseDelaCruz
             foreach (string line in lines)
             {
                 encounterNotes.Add(new EncounterNote(line));
-                countOfNotes++;
             }
 
             return encounterNotes;
@@ -34,6 +32,12 @@ namespace Assign3_KimberlyRoseDelaCruz
             //appendtext in the text file
             
             File.AppendAllText(filePath, $"\n{fullText}");
+        }
+
+        public void WriteAllDataToTextFile(string fullText)
+        {
+            //write all text in the text file
+            File.WriteAllText(filePath, fullText);
         }
     }
 }

@@ -139,6 +139,7 @@
             this.btnDeleteNote.TabIndex = 16;
             this.btnDeleteNote.Text = "Delete Note";
             this.btnDeleteNote.UseVisualStyleBackColor = true;
+            this.btnDeleteNote.Click += new System.EventHandler(this.btnDeleteNote_Click);
             // 
             // btnUpdateNote
             // 
